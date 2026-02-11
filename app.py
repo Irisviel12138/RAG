@@ -11,16 +11,34 @@ st.title("工程级 RAG 实验台（test）")
 
 with st.sidebar:
     st.header("数据导入")
-    llm_provider = st.selectbox("回答模式", ["extractive", "openai"], index=0)
-    llm_model = st.text_input("LLM 模型", "gpt-4o-mini")
+    llm_provider = st.selectbox("回答模式", ["extractive", "openai", "ollama"], index=0)
+    default_model = "gpt-4o-mini" if llm_provider == "openai" else "qwen2.5:7b"
+    llm_model = st.text_input("LLM 模型", default_model)
+    ollama_base_url = st.text_input("Ollama 地址", "http://localhost:11434")
 
     if llm_provider == "openai" and not os.getenv("OPENAI_API_KEY"):
         st.warning("未检测到 OPENAI_API_KEY，将自动降级为 extractive 模式。")
+    if llm_provider == "ollama":
+        st.info("无需云 API，需本地先启动 Ollama 服务。")
 
-    if "pipeline" not in st.session_state or st.session_state.get("provider") != llm_provider:
-        cfg = PipelineConfig(llm=LLMConfig(provider=llm_provider, model=llm_model, temperature=0.0))
+    if (
+        "pipeline" not in st.session_state
+        or st.session_state.get("provider") != llm_provider
+        or st.session_state.get("model") != llm_model
+        or st.session_state.get("ollama_base_url") != ollama_base_url
+    ):
+        cfg = PipelineConfig(
+            llm=LLMConfig(
+                provider=llm_provider,
+                model=llm_model,
+                temperature=0.0,
+                ollama_base_url=ollama_base_url,
+            )
+        )
         st.session_state.pipeline = RAGPipeline(cfg)
         st.session_state.provider = llm_provider
+        st.session_state.model = llm_model
+        st.session_state.ollama_base_url = ollama_base_url
 
     st.subheader("方式 A：手动文本")
     doc_id = st.text_input("文档 ID", "doc-1")

@@ -137,3 +137,14 @@
 - 当前代码已支持 `extractive` 与 `openai` 两种回答模式。
 - 本地无 API Key 时会自动回退到 extractive，保证可运行。
 - 若启用 OpenAI：`export OPENAI_API_KEY=...` 后在 Streamlit 侧边栏切换模式。
+
+
+## 10. 无 API 成本方案
+
+- `extractive`：无需任何 API，即可得到证据驱动答案。
+- `ollama`：本地模型推理（如 qwen2.5、llama3.1），无需购买 OpenAI API。
+
+## 11. PDF/PPT 公式与排版问题
+
+- 这是版面型文档转纯文本的常见问题，不是 RAG 独有。
+- 已做基础清洗，但复杂公式仍建议采用 OCR/公式识别链路。

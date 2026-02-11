@@ -2,11 +2,12 @@
 
 from __future__ import annotations
 
+import re
+import unicodedata
 from dataclasses import dataclass
 from io import BytesIO
 from pathlib import Path
 from typing import List
-
 
 
 @dataclass
@@ -14,6 +15,26 @@ class ParsedDocument:
     doc_id: str
     content: str
     source_type: str
+
+
+def _normalize_text(text: str) -> str:
+    # Unicode normalization helps keep math symbols and latin letters stable.
+    text = unicodedata.normalize("NFKC", text)
+
+    # Remove common replacement chars produced by PDF extraction.
+    text = text.replace("�", "")
+
+    # Normalize common OCR/PDF bullets/dashes.
+    text = text.replace("•", "- ").replace("·", "- ")
+
+    # Heuristic fixes for broken derivatives in teaching slides/PDFs.
+    text = text.replace("d f", "df").replace("d x", "dx")
+
+    # Collapse extra spaces but preserve line breaks for structure.
+    lines = [re.sub(r"[ \t]+", " ", ln).strip() for ln in text.splitlines()]
+    lines = [ln for ln in lines if ln]
+
+    return "\n".join(lines)
 
 
 def _read_pdf(data: bytes) -> str:
@@ -24,7 +45,7 @@ def _read_pdf(data: bytes) -> str:
     for i, page in enumerate(reader.pages, start=1):
         text = (page.extract_text() or "").strip()
         if text:
-            pages.append(f"[Page {i}]\n{text}")
+            pages.append(f"[Page {i}]\n{_normalize_text(text)}")
     return "\n\n".join(pages)
 
 
@@ -36,7 +57,7 @@ def _read_docx(data: bytes) -> str:
     for para in doc.paragraphs:
         text = para.text.strip()
         if text:
-            parts.append(text)
+            parts.append(_normalize_text(text))
     return "\n".join(parts)
 
 
@@ -51,7 +72,7 @@ def _read_pptx(data: bytes) -> str:
             text = getattr(shape, "text", "")
             text = text.strip() if text else ""
             if text:
-                chunk.append(text)
+                chunk.append(_normalize_text(text))
         if chunk:
             slides.append(f"[Slide {idx}]\n" + "\n".join(chunk))
     return "\n\n".join(slides)

@@ -59,3 +59,27 @@ streamlit run app.py
 ## 真实文档导入
 
 在 Streamlit 侧边栏可直接上传 `PDF / DOCX / PPTX`，系统会自动抽取文本并写入索引，然后你可以直接提问。
+
+
+## 不接入 API 的方式
+
+你可以不用购买 OpenAI API：
+
+- `extractive`：纯本地证据总结（零 API 成本）
+- `ollama`：本地模型生成（如 `qwen2.5:7b`），需先安装并启动 Ollama
+
+示例：
+
+```bash
+ollama serve
+ollama run qwen2.5:7b
+streamlit run app.py
+```
+
+
+## 文档排版噪声说明
+
+PDF/PPT 由布局恢复文本时，可能出现断行、符号缺失等问题。当前解析器已做基础清洗（Unicode 归一化、异常字符清理、空白规整），对数学公式类文档建议：
+
+- 优先使用源 DOCX/Markdown；
+- 或采用 OCR/版面分析增强方案（如 Mathpix、Nougat、MinerU）。

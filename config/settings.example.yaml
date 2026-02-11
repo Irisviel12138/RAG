@@ -17,7 +17,8 @@ chunking:
   chunk_overlap: 100
 
 generation:
-  provider: extractive   # extractive | openai
+  provider: extractive   # extractive | openai | ollama
   model: gpt-4o-mini
   temperature: 0.0
   require_citations: true
+  ollama_base_url: http://localhost:11434
