@@ -17,6 +17,7 @@ chunking:
   chunk_overlap: 100
 
 generation:
+  provider: extractive   # extractive | openai
   model: gpt-4o-mini
   temperature: 0.0
   require_citations: true

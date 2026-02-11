@@ -130,3 +130,10 @@
 - 增量索引与文档版本管理
 - 观测：trace + token 成本监控
 - 线上反馈闭环（bad case 自动入评测集）
+
+
+## 9. 运行提示（LLM 接入）
+
+- 当前代码已支持 `extractive` 与 `openai` 两种回答模式。
+- 本地无 API Key 时会自动回退到 extractive，保证可运行。
+- 若启用 OpenAI：`export OPENAI_API_KEY=...` 后在 Streamlit 侧边栏切换模式。

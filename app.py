@@ -1,3 +1,26 @@
+import os
+
+import streamlit as st
+
+from src.rag.llm import LLMConfig
+from src.rag.pipeline import PipelineConfig, RAGPipeline
+
+st.set_page_config(page_title="Engineering RAG", layout="wide")
+st.title("工程级 RAG 实验台（test）")
+
+with st.sidebar:
+    st.header("数据导入")
+    llm_provider = st.selectbox("回答模式", ["extractive", "openai"], index=0)
+    llm_model = st.text_input("LLM 模型", "gpt-4o-mini")
+
+    if llm_provider == "openai" and not os.getenv("OPENAI_API_KEY"):
+        st.warning("未检测到 OPENAI_API_KEY，将自动降级为 extractive 模式。")
+
+    if "pipeline" not in st.session_state or st.session_state.get("provider") != llm_provider:
+        cfg = PipelineConfig(llm=LLMConfig(provider=llm_provider, model=llm_model, temperature=0.0))
+        st.session_state.pipeline = RAGPipeline(cfg)
+        st.session_state.provider = llm_provider
+
 import streamlit as st
 
 from src.rag.pipeline import PipelineConfig, RAGPipeline
