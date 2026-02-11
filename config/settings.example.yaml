@@ -1,0 +1,23 @@
+project:
+  name: rag-engineering
+  language: zh
+
+retrieval:
+  top_k: 20
+  rerank_top_n: 5
+  vector_store: faiss   # faiss | chroma
+
+embedding:
+  provider: bge         # bge | openai
+  model: BAAI/bge-large-zh-v1.5
+
+chunking:
+  strategy: recursive   # fixed | recursive | semantic
+  chunk_size: 500
+  chunk_overlap: 100
+
+generation:
+  provider: extractive   # extractive | openai
+  model: gpt-4o-mini
+  temperature: 0.0
+  require_citations: true
