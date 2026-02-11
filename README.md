@@ -37,8 +37,3 @@ streamlit run app.py
     └── pipeline.py
 ```
 
-## 招聘导向（你在面试里可以说）
-
-- 你不仅搭建了 RAG，还对 chunk、embedding、索引和 rerank 做了系统性 A/B 对比。
-- 你建立了 hallucination 归因路径（召回不足、上下文污染、生成约束不足）。
-- 你能讲清楚为什么“检索质量”比“换更大模型”更优先。
