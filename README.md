@@ -63,3 +63,30 @@ PDF/PPT 由布局恢复文本时，可能出现断行、符号缺失等问题。
 
 - 优先使用源 DOCX/Markdown；
 - 或采用 OCR/版面分析增强方案（如 Mathpix、Nougat、MinerU）。
+
+
+## Top-k 检索规模实验（按题目要求）
+
+已提供脚本：`src/rag/topk_experiment.py`，实现以下设置：
+
+- 数据集：`mandarjoshi/trivia_qa` 的 `unfiltered`
+- 检索器：BM25
+- 生成模型：`google/flan-t5-base`
+- 指标：EM / F1、Hit@k、Faithfulness 三分类
+- 图表：
+  - Accuracy(EM) vs Top-k
+  - Supported Rate vs Top-k
+  - Correct but Unsupported vs Top-k
+
+运行示例：
+
+```bash
+python -m src.rag.topk_experiment --split validation --num-samples 100 --topk 1 3 5 10 20
+```
+
+输出：
+
+- `artifacts/topk_ablation/topk_results.csv`
+- `artifacts/topk_ablation/accuracy_vs_topk.png`
+- `artifacts/topk_ablation/supported_vs_topk.png`
+- `artifacts/topk_ablation/correct_unsupported_vs_topk.png`
